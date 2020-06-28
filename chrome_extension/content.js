@@ -11,7 +11,7 @@ function unicodeToChar(text) {
 
 // capture all text
 var textToSend = document.body.innerText;
-console.log(typeof(textToSend));
+//console.log(typeof(textToSend));
 var realText = document.querySelectorAll("[data-test-id='comment']")
 //console.log(realText[0]);
 //console.log(realText.length);
@@ -35,13 +35,13 @@ for (let i = 0; i<realText.length; i++) {
 	for (let j = 0; j<comments.length; j++){
 		commentArray[counter] = comments[j].innerHTML;
 		counter++;
-		console.log(comments[j].innerHTML);
+		//console.log(comments[j].innerHTML);
 	}
 }
 
-alert(JSON.stringify(commentArray));
+//alert(JSON.stringify(commentArray));
 
-console.log(realText);
+//console.log(realText);
 var textArray = textToSend.split("\n");
 
 for (let i = 0; i < 30; i++) {
@@ -64,16 +64,27 @@ for (let i = 0; i < 30; i++) {
 
 
 // summarize and send back
+//if (typeof(api_url)==='undefined'){
 //const api_url = 'YOUR_GOOGLE_CLOUD_FUNCTION_URL';
-
-/* fetch(api_url, {
+const api_url = 'https://0.0.0.0:80/predict';
+//}
+console.log(JSON.stringify(commentArray));
+ fetch(api_url, {
   method: 'POST',
-  body: JSON.stringify(textToSend),
+  body: JSON.stringify(commentArray),
   headers:{
     'Content-Type': 'application/json'
   } })
 .then(data => { return data.json() })
 .then(res => { 
+	$.each(res, function( index, value ) {
+		//value = unicodeToChar(value).replace(/\\n/g, '');
+		console.log(value);
+		//document.body.innerHTML = document.body.innerHTML.split('to').join('<span style="background-color: #fff799;">' + 'to' + '</span>');
+	});
+ })
+.catch(error => console.error('Error:', error));
+/*.then(res => { 
 	$.each(res, function( index, value ) {
 		value = unicodeToChar(value).replace(/\\n/g, '');
 		document.body.innerHTML = document.body.innerHTML.split(value).join('<span style="background-color: #fff799;">' + value + '</span>');

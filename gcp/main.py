@@ -6,8 +6,8 @@ from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.naive_bayes import MultinomialNB
 
 
-model = load('models/nb_classifier.joblib')
-vectorizer = load('models/count_vectorizer.joblib')
+model = load('models/model.joblib')
+vectorizer = load('models/preprocessor.joblib')
 
 def get_toxicity_prediction(request):
     # For more information about CORS and CORS preflight requests, see

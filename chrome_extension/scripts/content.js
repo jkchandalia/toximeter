@@ -1,6 +1,6 @@
 //TO DO: need to find way to grab only relevant text. Limit to say reddit. 
 
-alert("Generating summary highlights. This may take up to 30 seconds depending on length of article.");
+alert("Analyzing comments for toxicity. This may take up to 30 seconds depending on length and number of comments.");
 
 function unicodeToChar(text) {
 	return text.replace(/\\u[\dA-F]{4}/gi, 
@@ -10,19 +10,15 @@ function unicodeToChar(text) {
 }
 
 // capture all text
-var textToSend = document.body.innerText;
-//console.log(typeof(textToSend));
+//var textToSend = document.body.innerText;
 var realText = document.querySelectorAll("[data-test-id='comment']")
-//console.log(realText[0]);
-//console.log(realText.length);
+
 var counter = 0;
 for (let i = 0; i<realText.length; i++) {
-	//console.log(realText[i]);
 	var comments = realText[i].getElementsByTagName('p');
-	//console.log(comments);
 	for (let j = 0; j<comments.length; j++){
 		counter++;
-		console.log(comments[j].innerHTML);
+		//console.log(comments[j].innerHTML);
 	}
 }
 
@@ -66,8 +62,11 @@ for (let i = 0; i < 30; i++) {
 // summarize and send back
 //if (typeof(api_url)==='undefined'){
 //const api_url = 'YOUR_GOOGLE_CLOUD_FUNCTION_URL';
-const api_url = 'https://us-central1-toxicity-90.cloudfunctions.net/get_toxicity_prediction';
-//}
+console.log(typeof(api_url));
+if(typeof(api_url) == 'undefined' ) {
+    const api_url = 'https://us-central1-toxicity-90.cloudfunctions.net/get_toxicity_prediction';
+};
+
 console.log(JSON.stringify(commentArray));
  fetch(api_url, {
   method: 'POST',

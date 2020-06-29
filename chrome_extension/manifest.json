@@ -1,18 +1,14 @@
 {
     "manifest_version": 2,
   
-    "name": "Trial and Error",
-    "description": "Hopefully this does something.",
+    "name": "Toxicity Meter",
+    "description": "Identify toxic comments on Reddit.",
     "version": "1.0",
   
     "browser_action": {
-     "default_icon": "icons8-chrome-16.png",
+     "default_icon": "images/icons8-chrome-16.png",
      "default_popup": "popup.html"
     },
-    "background": {
-        "scripts": ["background.js"],
-        "persistent": false
-      },
       "permissions": [
      "activeTab",
      "storage",

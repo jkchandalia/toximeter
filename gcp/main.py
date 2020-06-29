@@ -35,6 +35,7 @@ def get_toxicity_prediction(request):
     
     data = request.get_json(silent=True)  # Get data posted as a json
     comment_vectorized = vectorizer.transform(data)
-    out = list(model.predict_proba(comment_vectorized)[:,1])
+    pred_proba = model.predict_proba(comment_vectorized)[:,1]
+    out = list(zip(data,pred_proba))
     #prediction = model.predict_proba(data_vectorized)[:,1]  # runs globally loaded model on the data
     return (json.dumps(out), 200, headers)

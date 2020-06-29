@@ -66,7 +66,7 @@ for (let i = 0; i < 30; i++) {
 // summarize and send back
 //if (typeof(api_url)==='undefined'){
 //const api_url = 'YOUR_GOOGLE_CLOUD_FUNCTION_URL';
-const api_url = 'https://0.0.0.0:80/predict';
+const api_url = 'https://us-central1-toxicity-90.cloudfunctions.net/get_toxicity_prediction';
 //}
 console.log(JSON.stringify(commentArray));
  fetch(api_url, {

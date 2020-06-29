@@ -17,8 +17,8 @@ def load_model():
     global model
     global vectorizer
     # model variable refers to the global variable
-    model = load('./../models/nb_classifier.joblib')
-    vectorizer = load('./../models/count_vectorizer.joblib')
+    model = load('models/model.joblib')
+    preprocessor = load('models/preprocessor.joblib')
 
 @app.route('/')
 def home_endpoint():
@@ -27,13 +27,10 @@ def home_endpoint():
 
 @app.route('/predict', methods=['POST'])
 def get_prediction():
-    # Works only for a single sample
     if request.method == 'POST':
         data = request.get_json()  # Get data posted as a json
-
-        comment_vectorized = vectorizer.transform(data)
-        out = list(model.predict_proba(comment_vectorized)[:,1])
-        #prediction = model.predict_proba(data_vectorized)[:,1]  # runs globally loaded model on the data
+        comment_vectorized = preprocessor.transform(data)
+        out = list(model.predict_proba(comment_vectorized)[:,1])      
     return json.dumps(out)
 
 

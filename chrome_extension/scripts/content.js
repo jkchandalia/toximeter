@@ -25,46 +25,17 @@ for (let i = 0; i<realText.length; i++) {
 var commentArray = new Array(counter);
 counter=0;
 for (let i = 0; i<realText.length; i++) {
-	//console.log(realText[i]);
 	var comments = realText[i].getElementsByTagName('p');
-	//console.log(comments);
 	for (let j = 0; j<comments.length; j++){
 		commentArray[counter] = comments[j].innerHTML;
 		counter++;
-		//console.log(comments[j].innerHTML);
 	}
 }
 
-//alert(JSON.stringify(commentArray));
-
-//console.log(realText);
-var textArray = textToSend.split("\n");
-
-for (let i = 0; i < 30; i++) {
-	var value = textArray[i];
-	//console.log("value");
-	//console.log(value);
-	//console.log("html split");
-	//console.log(document.body.innerHTML.split(value));
-	//if (value){
-	//document.body.innerHTML = document.body.innerHTML.split(value).join('<span style="background-color: #fff799;">' + value + '</span>');}
-  }
-  
-/* for (const value in textToSend.split("\n")) {
-	document.body.innerHTML = document.body.innerHTML.split(value).join('<span style="background-color: #fff799;">' + value + '</span>');
-  } */
-/* $.each(textToSend, function( index, value ) {
-	value = unicodeToChar(value).replace(/\\n/g, '');
-	document.body.innerHTML = document.body.innerHTML.split(value).join('<span style="background-color: #fff799;">' + value + '</span>');
-}) */
-
-
-// summarize and send back
-//if (typeof(api_url)==='undefined'){
-//const api_url = 'YOUR_GOOGLE_CLOUD_FUNCTION_URL';
-console.log(typeof(api_url));
-if(typeof(api_url) == 'undefined' ) {
-    const api_url = 'https://us-central1-toxicity-90.cloudfunctions.net/get_toxicity_prediction';
+// Analyze and send back
+console.log(typeof(api_url)==='undefined');
+if(typeof(api_url) === 'undefined' ) {
+    api_url = 'https://us-central1-toxicity-90.cloudfunctions.net/get_toxicity_prediction';
 };
 
 console.log(JSON.stringify(commentArray));
@@ -78,16 +49,11 @@ console.log(JSON.stringify(commentArray));
 .then(res => { 
 	$.each(res, function( index, value ) {
 		//value = unicodeToChar(value).replace(/\\n/g, '');
-		console.log(value);
-		//document.body.innerHTML = document.body.innerHTML.split('to').join('<span style="background-color: #fff799;">' + 'to' + '</span>');
+		score = value[1];
+		comment_text = value[0];
+		if (score>.9){
+			console.log(value);
+		document.body.innerHTML = document.body.innerHTML.split(comment_text).join('<span style="background-color: #AA0000;">' + comment_text + '</span>');}
 	});
  })
 .catch(error => console.error('Error:', error));
-/*.then(res => { 
-	$.each(res, function( index, value ) {
-		value = unicodeToChar(value).replace(/\\n/g, '');
-		document.body.innerHTML = document.body.innerHTML.split(value).join('<span style="background-color: #fff799;">' + value + '</span>');
-	});
- })
-.catch(error => console.error('Error:', error)); */
-

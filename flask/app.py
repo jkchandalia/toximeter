@@ -18,7 +18,7 @@ def load_model():
     global vectorizer
     # model variable refers to the global variable
     model = load('models/model.joblib')
-    preprocessor = load('models/preprocessor.joblib')
+    preprocessor = load('models/preprocessing.joblib')
 
 @app.route('/')
 def home_endpoint():

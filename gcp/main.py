@@ -7,7 +7,7 @@ from sklearn.naive_bayes import MultinomialNB
 
 
 model = load('models/model.joblib')
-preprocessor = load('models/preprocessor.joblib')
+preprocessor = load('models/preprocessing.joblib')
 
 def get_toxicity_prediction(request):
     # For more information about CORS and CORS preflight requests, see

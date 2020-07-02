@@ -12,7 +12,8 @@
       "permissions": [
      "activeTab",
      "storage",
-     "declarativeContent"
+     "declarativeContent",
+     "https://us-central1-toxicity-90.cloudfunctions.net/get_toxicity_prediction"
      ]
      
   }

@@ -1,3 +1,4 @@
+import string
 
 
 def remove_punctuation(text, exclude=["'"]):
@@ -24,3 +25,13 @@ def remove_stop_words(text):
 
 def tokenize(text):
     return text.lower().split()
+
+def clean_text(text):
+    return remove_stop_words(remove_punctuation(text))
+
+
+def lemmatize(text_list, lemmatizer=None):
+    if lemmatizer:
+        return [lemmatizer.lemmatize(word) for word in text_list]
+    else:
+        return text_list

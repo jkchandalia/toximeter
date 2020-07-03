@@ -1,5 +1,12 @@
 import string
+from nltk.stem.wordnet import WordNetLemmatizer 
+lemmatizer = WordNetLemmatizer()
 
+import nltk
+nltk.download('stopwords')
+nltk.download('wordnet')
+from nltk.corpus import stopwords
+stop = stopwords.words('english')
 
 def remove_punctuation(text, exclude=["'"]):
     #Remove punctuation but leave apostrophe
@@ -8,13 +15,13 @@ def remove_punctuation(text, exclude=["'"]):
         punctuation_to_remove = ''.join(list(set(string.punctuation)-set(exclude)))
     else:
         punctuation_to_remove = string.punctuation
-    text = text.translate(str.maketrans('', '', punctuation_to_remove)
+    text = text.translate(str.maketrans('', '', punctuation_to_remove))
     return text
 
 def remove_numbers(text):
     #Remove punctuation but leave apostrophe
     #TO DO: remove numbers
-    text = text.translate(str.maketrans('', '', string.digits)
+    text = text.translate(str.maketrans('', '', string.digits))
     return text
 
 def keep_alpha_char(text):

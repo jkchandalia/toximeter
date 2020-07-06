@@ -4,7 +4,10 @@
 
 The toxic comment classifier will be deployed as an API accessible through a POST request. It will take an array of text comments as input and return an array as output where each item is an array with the original text and a score indicating toxicity. 
 
-This API will be deployed as a serverless function. The code for this deployment is in the gcp folder. The gcp endpoint can be tested with:
+This API will be deployed as a serverless function. The code for this deployment is in the gcp folder. The google cloud function is deployed with the following command:
+> gcloud functions deploy get_toxicity_prediction --runtime python37 --trigger-http --allow-unauthenticated
+
+The gcp endpoint can be tested with:
 
 > curl -X POST    https://us-central1-toxicity-90.cloudfunctions.net/get_toxicity_prediction    -H 'Content-Type: application/json'    -d '["hello","fuck, this is a toxic comment"]'
 

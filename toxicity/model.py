@@ -16,9 +16,9 @@ from joblib import dump, load
 #from scipy.sparse import csr_matrix, hstack
 
 
-def make_train_test(df_train):
-    xtrain, xvalid, ytrain, yvalid = train_test_split(df_train.comment_text.values, df_train.toxic.values, 
-    stratify=df_train.toxic.values, random_state=42, test_size=0.2, shuffle=True)
+def make_train_test(X, y):
+    xtrain, xvalid, ytrain, yvalid = train_test_split(X, y, 
+    stratify=y, random_state=42, test_size=0.2, shuffle=True)
     return xtrain, xvalid, ytrain, yvalid
     
 
@@ -30,16 +30,11 @@ def apply_count_vectorizer(xtrain, xvalid, output_path=None):
         dump(count_vectorizer, output_path + '/count_vectorizer.joblib')
     return count_train, count_valid
 
-def run_naive_bayes_classifier(count_train, count_valid, ytrain, y_alid, output_path=None):
+def run_naive_bayes_classifier(count_train, ytrain, output_path=None):
     nb_classifier = MultinomialNB()
-
     nb_classifier.fit(count_train, ytrain)
-    pred = nb_classifier.predict(count_valid)
-    pred_proba = nb_classifier.predict_proba(count_valid)[:,1]
-
     if output_path:
         dump(nb_classifier, output_path + '/nb_classifier.joblib')
-
     return nb_classifier
      
 def apply_tfidf_vectorizer(xtrain, xvalid, output_path=None):

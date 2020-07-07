@@ -20,7 +20,7 @@ Test the API using:
 This deployed toxicity classifier can then be used in a Chrome Extension to label toxic comments on sites like Twitter. The code for the chrome extension can be found in the chrome_extension_twitter folder. To install this extension, navigate to chrome://extensions/ in your chrome browser. Click on "Load Unpacked" and load all the files in the chrome_extension folder in this repo. Navigate to a particular conversation on topic on twitter like: 
 > https://twitter.com/search?q=trump&src=typed_query
 
-As one scrolls down the twitter feed, toxic tweets will automatically be labeled with a red background. Responses from the deployed model can be seen using the "Inspect" tool (right click in a browser window to get this option). Model output can be seen in the console. Due to possible rate-limiting or outages for the google cloud function, it is possible to see 429 or 500 status codes. These will generally resolve after a few minutes.
+As one scrolls down the twitter feed, toxic tweets will automatically be labeled with a red background. Responses from the deployed model can be seen using the "Inspect" tool (right click in a browser window to get this option). Model output can be seen in the console. Due to possible rate-limiting or outages for the google cloud function, it is possible to see 429 or 500 status codes. These will generally resolve after a few minutes. If the problem persists, it may require redeployment of the google cloud function.
 
 This version of the deployment is a serverless deployment where the cloud service will manage all of the infrastructure and scaling. An even better way to deploy this for the Chrome extension would be client-side using using a javascript model. 
 

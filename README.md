@@ -17,11 +17,11 @@ For faster local iteration, a simple flask-based application can be used for mod
 Test the API using:
 > curl -X POST    0.0.0.0:80/predict    -H 'Content-Type: application/json'    -d '["hello","fuck, this is a toxic comment"]'
 
-This deployed toxicity classifier can then be used in a Chrome Extension to label toxic comments on sites like Reddit. The code for the chrome extension can be found in the chrome_extension folder. To install this extension, navigate to chrome://extensions/ in your chrome browser. Click on "Load Unpacked" and load all the files in the chrome_extension folder in this repo. Navigate to a particular conversation on reddit like: 
-> https://www.reddit.com/r/politics/comments/hie3tq/trump_got_written_briefing_in_february_on/
+This deployed toxicity classifier can then be used in a Chrome Extension to label toxic comments on sites like Twitter. The code for the chrome extension can be found in the chrome_extension_twitter folder. To install this extension, navigate to chrome://extensions/ in your chrome browser. Click on "Load Unpacked" and load all the files in the chrome_extension folder in this repo. Navigate to a particular conversation on topic on twitter like: 
+> https://twitter.com/search?q=trump&src=typed_query
 
-Click on "View Entire Discussion" to load more comments for labeling and then click on the chrome extension icon. Click the "Label Toxicity" button and then toxic comments will be labeled with a dark red background to both identify them and make them hard to read. 
+As one scrolls down the twitter feed, toxic tweets will automatically be labeled with a red background. Responses from the deployed model can be seen using the "Inspect" tool (right click in a browser window to get this option). Model output can be seen in the console. Due to possible rate-limiting or outages for the google cloud function, it is possible to see 429 or 500 status codes. These will generally resolve after a few minutes.
 
-This version of the deployment is a serverless deployment where the cloud service will manage all of the infrastructure and scaling. 
+This version of the deployment is a serverless deployment where the cloud service will manage all of the infrastructure and scaling. An even better way to deploy this for the Chrome extension would be client-side using using a javascript model. 
 
 Another possibility for consuming the model is a simple front-end displaying the toxicity of several twitter topics, i.e., politics and the pandemic. 

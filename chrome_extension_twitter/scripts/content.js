@@ -44,8 +44,8 @@ var process_new_tweets = function() {
 	  .catch(error => console.log('Error:', error));
 	}
 	
-	setTimeout(process_new_tweets, 1000); // scan timeline 1sec after load
-	setInterval(process_new_tweets, 5000); // every 10 sec lets scan all
+	setTimeout(process_new_tweets, 2000); // scan timeline 1sec after load
+	setInterval(process_new_tweets, 5000); // every 5 sec lets scan all
 
 
 

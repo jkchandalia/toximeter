@@ -1,0 +1,7 @@
+id,comment_text,toxic,severe_toxic,obscene,threat,insult,identity_hate
+0000997932d777bf,"dummy text",0,0,0,0,0,0
+000103f0d9cfb60f,"dummy text",0,0,0,0,0,0
+000113f07ec002fd,"dummy text",0,0,0,0,0,0
+0001b41b1c6bb37e,"dummy text",0,0,0,0,0,0
+0001d958c54c6e35,"dummy text",0,0,0,0,0,0
+00025465d4725e87,"dummy text",0,0,0,0,0,0

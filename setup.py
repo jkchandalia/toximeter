@@ -19,10 +19,16 @@ setup(
     classifiers=[
         'Programming Language :: Python :: 3',
     ],
-    # Substitute <github_account> with the name of your GitHub account
+    install_requires=[
+        'click>=7.0'
+    ],
     url='https://github.com/jkchandalia/toxic-comment-classifier',
-    author='JKChandalia',  # Substitute your name
-    author_email='jkchandalia@gmail.com',  # Substitute your email
+    author='JKChandalia',
+    author_email='jkchandalia@gmail.com',
     license='MIT',
     packages=['toxicity'],
+    entry_points='''
+        [console_scripts]
+        toxicity=toxicity.command_line:toxicity_analysis
+    '''
 )

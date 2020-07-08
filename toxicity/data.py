@@ -24,7 +24,7 @@ def load(input_path, filter=True, return_X_y=False):
     if filter:
         df_data = df_data.loc[:,df_data.columns.isin(['toxic', 'comment_text'])]
         if return_X_y:
-            return (df_data.drop('toxic', axis=1), df_data['toxic'])
+            return (df_data.drop('toxic', axis=1).values, df_data['toxic'].values)
     elif return_X_y:
         raise ValueError("return_X_y cannot be True if filter is False")
     return df_data

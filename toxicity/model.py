@@ -16,9 +16,9 @@ from joblib import dump, load
 #from scipy.sparse import csr_matrix, hstack
 
 
-def make_train_test(X, y):
-    xtrain, xvalid, ytrain, yvalid = train_test_split(X, y, 
-    stratify=y, random_state=42, test_size=0.2, shuffle=True)
+def make_train_test(df_train):
+    xtrain, xvalid, ytrain, yvalid = train_test_split(df_train.comment_text.values, df_train.toxic.values, 
+    stratify=df_train.toxic.values, random_state=42, test_size=0.2, shuffle=True)
     return xtrain, xvalid, ytrain, yvalid
     
 

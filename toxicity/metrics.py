@@ -6,7 +6,7 @@ def run_metrics(predictions, predictions_prob, target, output_path=None, visuali
     fpr, tpr, thresholds = metrics.roc_curve(target, predictions_prob)
     roc_auc = metrics.auc(fpr, tpr)
     precision, recall, thresholds = metrics.precision_recall_curve(target, predictions_prob)
-    auc = metrics.auc(recall), precision)
+    auc = metrics.auc(recall, precision)
     average_precision = metrics.average_precision_score(target, predictions)
 
     print('Average precision-recall score: {0:0.2f}'.format(
@@ -26,7 +26,7 @@ def run_metrics(predictions, predictions_prob, target, output_path=None, visuali
         
         plt.figure()
         plt.plot(recall, precision)
-        plt.title('Precision-Recall curve, AUC: {0:0.2f}'.format(auc)')
+        plt.title('Precision-Recall curve, AUC: {0:0.2f}'.format(auc))
         plt.xlabel('Recall')
         plt.ylabel('Precision')
         if output_path:

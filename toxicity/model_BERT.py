@@ -45,7 +45,7 @@ def load_model_from_checkpoint(model, checkpoint_dir):
     model.load_weights(latest)
     return model
 
-def build_BERT_model_classification(transformer=transformer_layer, max_len=512, transformer_trainable=False):
+def build_BERT_model_classification(transformer, max_len=512, transformer_trainable=False):
     """
     Function for training the BERT model
     """
@@ -65,7 +65,7 @@ def build_BERT_model_classification(transformer=transformer_layer, max_len=512, 
     
     return model
 
-def build_BERT_model_lstm(transformer=tranformer_layer, max_len=512, transformer_trainable=False):
+def build_BERT_model_lstm(transformer, max_len=512, transformer_trainable=False):
     """
     Function for training the BERT model
     """

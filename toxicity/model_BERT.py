@@ -1,0 +1,87 @@
+
+import os
+import tensorflow as tf
+import transformers
+from tensorflow.keras.layers import Dense, Input, Dropout, LSTM
+from tensorflow.keras.optimizers import Adam
+from tensorflow.keras.models import Model
+from tensorflow.keras.callbacks import ModelCheckpoint, EarlyStopping, TensorBoard, History
+from tensorflow.keras.metrics import Accuracy, AUC
+from tokenizers import BertWordPieceTokenizer
+
+
+def make_callbacks(dir_path, project_name):
+  # Create a callback for tensorboard
+  tb_callback = TensorBoard(log_dir=dir_path+'Graph/'+project_name, histogram_freq=0, write_graph=True, write_images=True)
+
+  # Create a callback that saves the model's weights every epoch
+  checkpoint_path = dir_path+'training/'+project_name+'/cp-{epoch:04d}.ckpt'
+  checkpoint_dir = os.path.dirname(checkpoint_path)
+
+  cp_callback = ModelCheckpoint(
+      filepath=checkpoint_path, 
+      verbose=1, 
+      save_weights_only=True,
+      save_freq='epoch',
+      period=5)
+
+  # Callback for early stopping if model isn't improving
+  es = EarlyStopping(
+      monitor='val_loss', min_delta=0, patience=2, verbose=0, mode='auto',
+      baseline=None, restore_best_weights=True
+  )
+  return [cp_callback, tb_callback]
+
+
+def load_model_from_checkpoint(model, checkpoint_dir):
+    latest = tf.train.latest_checkpoint(checkpoint_dir)
+    model.load_weights(latest)
+    return model
+
+
+def build_BERT_model_classification(transformer, max_len=512, transformer_trainable=False):
+    """
+    Function for training the BERT model
+    """
+    transformer.trainable = transformer_trainable
+    input_word_ids = Input(shape=(max_len,), dtype='int32', name="input_word_ids")
+    sequence_output = transformer(input_word_ids)[0]
+    cls_token = sequence_output[:, 0, :]
+    pre_classified = Dense(768,
+            activation="relu",
+            name="pre_classifier")(cls_token)
+    logits = Dropout(.2)(pre_classified)
+    logits = Dense(2)(logits)
+    out = Dense(1, activation='sigmoid')(logits)
+    
+    model = Model(inputs=input_word_ids, outputs=out)
+    model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy', AUC(curve='PR')])
+    
+    return model
+    
+
+
+def build_BERT_model_lstm(transformer, max_len=512, transformer_trainable=False):
+    """
+    Function for training the BERT model
+    """
+    transformer.trainable = transformer_trainable
+    input_word_ids = Input(shape=(max_len,), dtype='int32', name="input_word_ids")
+    sequence_output = transformer(input_word_ids)[0]
+    cls_token = sequence_output[:, 0, :]
+    lstm_out = LSTM(100, activation="tanh", recurrent_activation="sigmoid")(sequence_output)
+    out = Dense(1, activation='sigmoid')(lstm_out)
+    
+    
+    model = Model(inputs=input_word_ids, outputs=out)
+    model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy', AUC(curve='PR')])
+    
+    return model
+
+
+transformer_layer = (
+    transformers.TFDistilBertModel
+    .from_pretrained('distilbert-base-cased')
+    )
+
+    

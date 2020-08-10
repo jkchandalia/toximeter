@@ -1,9 +1,13 @@
 # toxic-comment-classifier
 ## Problem Statement
 
-
+The goal of this project was to build Toximeter, a general purpose model capable of identifying toxic commentary. The data was provided by Jigsaw (an Alphabet subsidiary) in a kaggle competition, https://www.kaggle.com/c/jigsaw-toxic-comment-classification-challenge. The dataset consisted of ~225K Wikipedia comments, roughly 10% of which were considered toxic.
+ 
 ## Exploration
 
+I explored more 'classical' NLP techniques like bag-of-words models using simple word counts as well tf-idf (term frequency - inverse document frequency) weights with a Naive Bayes model. This model performed surprisingly well (AUC for PR-curve of 0.8).
+
+I did spend some time exploring more state-of-the-art models like LSTMs with pretrained word embeddings (GloVe) as well as BERT and DistilBERT based models. Of the deep learning models I explored, the GloVe+LSTM performed the best. I achieved an AUC-PR of 0.86. My takeaway is that a sequence layer after a feature extractor/embedding layer provides a lot of improvement. Further exploration avenues include making the base models such as the GloVe embeddings and the BERT models traininable. To date, I have kept them frozen. 
 
 ## Deployment
 

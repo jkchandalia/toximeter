@@ -2,12 +2,12 @@
 ## Problem Statement
 
 The goal of this project was to build Toximeter, a general purpose model capable of identifying toxic commentary. The data was provided by Jigsaw (an Alphabet subsidiary) in a kaggle competition, https://www.kaggle.com/c/jigsaw-toxic-comment-classification-challenge. The dataset consisted of ~225K Wikipedia comments, roughly 10% of which were considered toxic.
- 
+
 ## Exploration
 
-I explored more 'classical' NLP techniques like bag-of-words models using simple word counts as well tf-idf (term frequency - inverse document frequency) weights with a Naive Bayes model. This model performed surprisingly well (AUC for PR-curve of 0.8).
+I explored more 'classical' NLP techniques like bag-of-words models using simple word counts as well tf-idf (term frequency - inverse document frequency) weights with a Naive Bayes model. These model performed surprisingly well (AUC for PR-curve of 0.8).
 
-I did spend some time exploring more state-of-the-art models like LSTMs with pretrained word embeddings (GloVe) as well as BERT and DistilBERT based models. Of the deep learning models I explored, the GloVe+LSTM performed the best. I achieved an AUC-PR of 0.86. My takeaway is that a sequence layer after a feature extractor/embedding layer provides a lot of improvement. Further exploration avenues include making the base models such as the GloVe embeddings and the BERT models traininable. To date, I have kept them frozen. 
+I did spend some time exploring more state-of-the-art models like LSTMs with pretrained word embeddings (GloVe) as well as BERT and DistilBERT based models. Of the deep learning models I explored, the GloVe+LSTM performed the best. I achieved an AUC-PR of 0.86. My takeaway is that a sequence layer after a feature extractor/embedding layer provides a lot of improvement. Further model improvement avenues include making the base models such as the GloVe embeddings and the BERT models traininable. To date, I have kept them frozen. Other ideas include trying other tokenizers and exploring different NN architectures.
 
 ## Deployment
 
@@ -34,3 +34,12 @@ As one scrolls down the twitter feed, toxic tweets will automatically be labeled
 This version of the deployment is a serverless deployment where the cloud service will manage all of the infrastructure and scaling. An even better way to deploy this for the Chrome extension would be client-side using using a javascript model. 
 
 Another possibility for consuming the model is a simple front-end displaying the toxicity of several twitter topics, i.e., politics and the pandemic. 
+
+## Improvements
+
+The data used to train the models and the data that the model is scoring is qualitatively different, Wikipedia comments vs. Twitter comments. The available data provided a starting point but the full system would take a sample of the scored twitter comments the model and send them out to be labeled as toxic/nontoxic. The model would then need to be retrained periodically. The full monitoring solution would note changes in the toxicity scoring distributions over time and offer spot-checking capabilities for a small sample of comments.
+
+Notably, commercially available versions of this type of model have not necessarily performed well: 
+
+1. Tune, a Chrome extension: https://chrome.google.com/webstore/detail/tune-experimental/gdfknffdmmjakmlikbpdngpcpbbfhbnp?hl=en
+2. Perspective API, an API for toxicity labeling from Jigsaw

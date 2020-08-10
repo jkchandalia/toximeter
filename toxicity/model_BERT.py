@@ -10,6 +10,14 @@ from tensorflow.keras.metrics import Accuracy, AUC
 from tokenizers import BertWordPieceTokenizer
 
 
+#Load BERT tokenizers and transformers
+tokenizer = transformers.DistilBertTokenizer.from_pretrained('distilbert-base-cased')
+# Save the loaded tokenizer locally
+tokenizer.save_pretrained('.')
+# Reload it with the huggingface tokenizers library
+fast_tokenizer = BertWordPieceTokenizer('vocab.txt', lowercase=False)
+
+
 def make_callbacks(dir_path, project_name):
   # Create a callback for tensorboard
   tb_callback = TensorBoard(log_dir=dir_path+'Graph/'+project_name, histogram_freq=0, write_graph=True, write_images=True)
@@ -32,14 +40,12 @@ def make_callbacks(dir_path, project_name):
   )
   return [cp_callback, tb_callback]
 
-
 def load_model_from_checkpoint(model, checkpoint_dir):
     latest = tf.train.latest_checkpoint(checkpoint_dir)
     model.load_weights(latest)
     return model
 
-
-def build_BERT_model_classification(transformer, max_len=512, transformer_trainable=False):
+def build_BERT_model_classification(transformer=transformer_layer, max_len=512, transformer_trainable=False):
     """
     Function for training the BERT model
     """
@@ -58,8 +64,6 @@ def build_BERT_model_classification(transformer, max_len=512, transformer_traina
     model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy', AUC(curve='PR')])
     
     return model
-    
-
 
 def build_BERT_model_lstm(transformer=tranformer_layer, max_len=512, transformer_trainable=False):
     """
@@ -78,9 +82,6 @@ def build_BERT_model_lstm(transformer=tranformer_layer, max_len=512, transformer
     
     return model
 
-
-
-
 def fast_encode(texts, tokenizer, chunk_size=256, maxlen=MAX_LEN):
     """
     Encoder for encoding the text into sequence of integers for BERT Input
@@ -97,16 +98,6 @@ def fast_encode(texts, tokenizer, chunk_size=256, maxlen=MAX_LEN):
     
     return np.array(all_ids)
 
-transformer_layer = (
-    transformers.TFDistilBertModel
-    .from_pretrained('distilbert-base-cased')
-    )
-tokenizer = transformers.DistilBertTokenizer.from_pretrained('distilbert-base-cased')
-# Save the loaded tokenizer locally
-tokenizer.save_pretrained('.')
-# Reload it with the huggingface tokenizers library
-fast_tokenizer = BertWordPieceTokenizer('vocab.txt', lowercase=False)
-
 def smart_sample(x,y,multiplier=1):
     xpos = x[y==1]
     xneg = np.random.choice(xtrain, multiplier*sum(y))
@@ -115,5 +106,3 @@ def smart_sample(x,y,multiplier=1):
     ynew = np.concatenate((np.full(len(xpos), 1), np.full(len(xneg), 0)))
     p = np.random.permutation(length_new)
     return xnew[p], ynew[p]
-
-xtrain_s, ytrain_s = smart_sample(xtrain, ytrain)

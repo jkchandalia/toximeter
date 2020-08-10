@@ -61,7 +61,7 @@ def build_BERT_model_classification(transformer, max_len=512, transformer_traina
     
 
 
-def build_BERT_model_lstm(transformer, max_len=512, transformer_trainable=False):
+def build_BERT_model_lstm(transformer=tranformer_layer, max_len=512, transformer_trainable=False):
     """
     Function for training the BERT model
     """
@@ -79,9 +79,41 @@ def build_BERT_model_lstm(transformer, max_len=512, transformer_trainable=False)
     return model
 
 
+
+
+def fast_encode(texts, tokenizer, chunk_size=256, maxlen=MAX_LEN):
+    """
+    Encoder for encoding the text into sequence of integers for BERT Input
+    """
+    #Only a small fraction of input is > maxlen, not biased across toxic/nontoxic.
+    tokenizer.enable_truncation(max_length=maxlen)
+    tokenizer.enable_padding(length=maxlen)
+    all_ids = []
+    
+    for i in tqdm(range(0, len(texts), chunk_size)):
+        text_chunk = texts[i:i+chunk_size].tolist()
+        encs = tokenizer.encode_batch(text_chunk)
+        all_ids.extend([enc.ids for enc in encs])
+    
+    return np.array(all_ids)
+
 transformer_layer = (
     transformers.TFDistilBertModel
     .from_pretrained('distilbert-base-cased')
     )
+tokenizer = transformers.DistilBertTokenizer.from_pretrained('distilbert-base-cased')
+# Save the loaded tokenizer locally
+tokenizer.save_pretrained('.')
+# Reload it with the huggingface tokenizers library
+fast_tokenizer = BertWordPieceTokenizer('vocab.txt', lowercase=False)
 
-    
+def smart_sample(x,y,multiplier=1):
+    xpos = x[y==1]
+    xneg = np.random.choice(xtrain, multiplier*sum(y))
+    xnew = np.concatenate((xpos, xneg))
+    length_new = len(xnew)
+    ynew = np.concatenate((np.full(len(xpos), 1), np.full(len(xneg), 0)))
+    p = np.random.permutation(length_new)
+    return xnew[p], ynew[p]
+
+xtrain_s, ytrain_s = smart_sample(xtrain, ytrain)

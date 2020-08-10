@@ -82,13 +82,13 @@ def build_BERT_model_lstm(transformer, max_len=512, transformer_trainable=False)
     
     return model
 
-def fast_encode(texts, tokenizer, chunk_size=256, maxlen=MAX_LEN):
+def fast_encode(texts, tokenizer, chunk_size=256, max_len=512):
     """
     Encoder for encoding the text into sequence of integers for BERT Input
     """
-    #Only a small fraction of input is > maxlen, not biased across toxic/nontoxic.
-    tokenizer.enable_truncation(max_length=maxlen)
-    tokenizer.enable_padding(length=maxlen)
+    #Only a small fraction of input is > max_len, not biased across toxic/nontoxic.
+    tokenizer.enable_truncation(max_length=max_len)
+    tokenizer.enable_padding(length=max_len)
     all_ids = []
     
     for i in tqdm(range(0, len(texts), chunk_size)):

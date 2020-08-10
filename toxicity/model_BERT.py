@@ -1,6 +1,7 @@
-
 import os
+import numpy as np
 import tensorflow as tf
+from tqdm import tqdm
 import transformers
 from tensorflow.keras.layers import Dense, Input, Dropout, LSTM
 from tensorflow.keras.optimizers import Adam
@@ -16,7 +17,15 @@ tokenizer = transformers.DistilBertTokenizer.from_pretrained('distilbert-base-ca
 tokenizer.save_pretrained('.')
 # Reload it with the huggingface tokenizers library
 fast_tokenizer = BertWordPieceTokenizer('vocab.txt', lowercase=False)
+transformer_layer = (
+    transformers.TFDistilBertModel
+    .from_pretrained('distilbert-base-cased')
+    )
 
+def find_max_len(texts):
+    max_len = int(round(texts.apply(lambda x:len(str(x).split())).max(), -2)+100)
+    print("Max length of comment text is: {}".format(max_len))
+    return max_len
 
 def make_callbacks(dir_path, project_name):
   # Create a callback for tensorboard

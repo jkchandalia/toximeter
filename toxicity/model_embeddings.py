@@ -3,12 +3,11 @@ import numpy as np
 import tensorflow as tf
 from tqdm import tqdm
 
-from tensorflow.keras.layers import Dense, Input, Dropout, LSTM
+from tensorflow.keras.layers import Input
 from tensorflow.keras.optimizers import Adam
 from tensorflow.keras.models import Model
 
 
-import tensorflow as tf
 from keras.models import Sequential
 from keras.layers.recurrent import LSTM, GRU,SimpleRNN
 from keras.layers.core import Dense, Activation, Dropout

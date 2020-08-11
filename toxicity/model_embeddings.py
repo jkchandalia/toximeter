@@ -8,7 +8,6 @@ from tensorflow.keras.optimizers import Adam
 from tensorflow.keras.models import Model
 
 
-
 import tensorflow as tf
 from keras.models import Sequential
 from keras.layers.recurrent import LSTM, GRU,SimpleRNN
@@ -23,71 +22,65 @@ from keras.callbacks import EarlyStopping, History, ModelCheckpoint, TensorBoard
 from tensorflow.keras.metrics import Accuracy, AUC
 
 
+def create_embedding_index(glove_embedding_path):
+    embeddings_index = {}
+    f = open(glove_embedding_path + 'glove840b300dtxt/glove.840B.300d.txt','r',encoding='utf-8')
+    for line in tqdm(f):
+        values = line.split(' ')
+        word = values[0]
+        coefs = np.asarray([float(val) for val in values[1:]])
+        embeddings_index[word] = coefs
+    f.close()
+    return embeddings_index
 
-def save_embeddings(output_path):
-    pass
+def create_embedding_matrix(word_index, embeddings_index, output_path=None):
+    # create an embedding matrix for the words we have in the dataset
+    embedding_matrix = np.zeros((len(word_index) + 1, 300))
+    for word, i in tqdm(word_index.items()):
+        embedding_vector = embeddings_index.get(word)
+        if embedding_vector is not None:
+            embedding_matrix[i] = embedding_vector
+    if output_path:
+        np.save(output_path, embedding_matrix)
+    return embedding_matrix
+
 
 def load_embeddings(input_path):
-    pass
+    embedding_matrix = np.load(input_path)
+    return embedding_matrix
 
-def build_BERT_model_classification(transformer, max_len=512, transformer_trainable=False):
+
+def build_model(word_index, embedding_matrix, max_len, transformer_trainable=False):
     """
-    Function for training the BERT model
+    Function for training the model
     """
-    transformer.trainable = transformer_trainable
-    input_word_ids = Input(shape=(max_len,), dtype='int32', name="input_word_ids")
-    sequence_output = transformer(input_word_ids)[0]
-    cls_token = sequence_output[:, 0, :]
-    pre_classified = Dense(768,
-            activation="relu",
-            name="pre_classifier")(cls_token)
-    logits = Dropout(.2)(pre_classified)
-    logits = Dense(2)(logits)
-    out = Dense(1, activation='sigmoid')(logits)
-    
-    model = Model(inputs=input_word_ids, outputs=out)
-    model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy', AUC(curve='PR')])
+    # A simple LSTM with glove embeddings and one dense layer
+    model = Sequential()
+    model.add(Embedding(len(word_index) + 1,
+                    300,
+                    weights=[embedding_matrix],
+                    input_length=max_len,
+                    trainable=transformer_trainable))
+
+    model.add(LSTM(100, activation="tanh",
+        recurrent_activation="sigmoid", dropout=0.2, recurrent_dropout=0.1))
+    model.add(Dense(1, activation='sigmoid'))
+    model.compile(loss='binary_crossentropy', optimizer='adam',metrics=['accuracy', AUC(curve='PR')])
     
     return model
 
-def build_BERT_model_lstm(transformer, max_len=512, transformer_trainable=False):
-    """
-    Function for training the BERT model
-    """
-    transformer.trainable = transformer_trainable
-    input_word_ids = Input(shape=(max_len,), dtype='int32', name="input_word_ids")
-    sequence_output = transformer(input_word_ids)[0]
-    cls_token = sequence_output[:, 0, :]
-    lstm_out = LSTM(100, activation="tanh", recurrent_activation="sigmoid")(sequence_output)
-    out = Dense(1, activation='sigmoid')(lstm_out)
-    
-    
-    model = Model(inputs=input_word_ids, outputs=out)
-    model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy', AUC(curve='PR')])
-    
-    return model
 
-def fast_encode(texts, tokenizer, chunk_size=256, max_len=512):
-    """
-    Encoder for encoding the text into sequence of integers for BERT Input
-    """
-    #Only a small fraction of input is > max_len, not biased across toxic/nontoxic.
-    tokenizer.enable_truncation(max_length=max_len)
-    tokenizer.enable_padding(length=max_len)
-    all_ids = []
-    
-    for i in tqdm(range(0, len(texts), chunk_size)):
-        text_chunk = texts[i:i+chunk_size].tolist()
-        encs = tokenizer.encode_batch(text_chunk)
-        all_ids.extend([enc.ids for enc in encs])
-    
-    return np.array(all_ids)
+def tokenize(xtrain, xvalid, max_len):
+    # using keras tokenizer here
+    token = text.Tokenizer(num_words=None)
+    token.fit_on_texts(list(xtrain) + list(xvalid))
+    xtrain_seq = token.texts_to_sequences(xtrain)
+    xvalid_seq = token.texts_to_sequences(xvalid)
 
-def smart_sample(x,y,multiplier=1):
-    xpos = x[y==1]
-    xneg = np.random.choice(xtrain, multiplier*sum(y))
-    xnew = np.concatenate((xpos, xneg))
-    length_new = len(xnew)
-    ynew = np.concatenate((np.full(len(xpos), 1), np.full(len(xneg), 0)))
-    p = np.random.permutation(length_new)
-    return xnew[p], ynew[p]
+    #zero pad the sequences
+    xtrain_pad = sequence.pad_sequences(xtrain_seq, maxlen=max_len)
+    xvalid_pad = sequence.pad_sequences(xvalid_seq, maxlen=max_len)
+
+    word_index = token.word_index
+    return xtrain_pad, xvalid_pad, word_index
+

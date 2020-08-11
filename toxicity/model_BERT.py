@@ -107,9 +107,9 @@ def fast_encode(texts, tokenizer, chunk_size=256, max_len=512):
     
     return np.array(all_ids)
 
-def smart_sample(x,y,multiplier=1):
+def smart_sample(x,y,multiplier=1,):
     xpos = x[y==1]
-    xneg = np.random.choice(xtrain, multiplier*sum(y))
+    xneg = np.random.choice(x, multiplier*sum(y))
     xnew = np.concatenate((xpos, xneg))
     length_new = len(xnew)
     ynew = np.concatenate((np.full(len(xpos), 1), np.full(len(xneg), 0)))

@@ -1,4 +1,4 @@
-# toxic-comment-classifier
+# toximeter
 ## Problem Statement
 
 The goal of this project was to build Toximeter, a general purpose model capable of identifying toxic commentary. The data was provided by Jigsaw (an Alphabet subsidiary) in a kaggle competition, https://www.kaggle.com/c/jigsaw-toxic-comment-classification-challenge. The dataset consisted of ~225K Wikipedia comments, roughly 10% of which were considered toxic.
